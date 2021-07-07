@@ -6,19 +6,19 @@ import Button from './layout/Button';
 type errorModalProps = {
 	title: string;
 	message: string;
-    onClick: (errorModalState: boolean) => void;
+    onClick: () => void;
 };
 
 const ErrorModal = ({ title, message, onClick }: errorModalProps) => {
 
-    const error_ClickHandler = (event: React.MouseEvent<HTMLButtonElement>) =>{
+    const error_ClickHandler = (event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>) =>{
         event.preventDefault();
-        onClick(false);
+        onClick();
     }
 
 	return (
 		<div>
-			<div className={classes.backdrop} />
+			<div className={classes.backdrop} onClick={error_ClickHandler} />
 			<Card className={classes.modal}>
 				<header>
 					<h2 className={classes.header}>{title}</h2>

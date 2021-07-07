@@ -17,8 +17,7 @@ const AddUser = ({ onClick }: adduserProps) => {
 	const [ enteredUsername, setEnteredUsername ] = useState('');
 	const [ enteredAge, setEnteredAge ] = useState('');
 	const [ isInvalid, setIsInvalid ] = useState(false);
-	const [ error, setError ] = 
-	useState<Error>({
+	const [ error, setError ] = useState<Error>({
 		title: '',
 		message: ''
 	});
@@ -44,18 +43,18 @@ const AddUser = ({ onClick }: adduserProps) => {
 			errorObj.message = 'Please enter a valid name (non-empty values).';
 			setError(errorObj);
 
-			setIsInvalid(true);
+			
 			return false;
 		} else if (!!!enteredAge && enteredAge.trim().length <= 0) {
 			errorObj.title = 'Invalid Age';
 			errorObj.message = 'Please enter a valid Age (non-empty values).';
 			setError(errorObj);
 
-			setIsInvalid(true);
+			
 			return false;
 		}
 
-		setIsInvalid(false);
+		
 		return true;
 	};
 
@@ -64,8 +63,8 @@ const AddUser = ({ onClick }: adduserProps) => {
 		setEnteredAge('');
 	};
 
-	const errorModal_ClickHandler = (invalidState: boolean) => {
-		setIsInvalid(invalidState);
+	const errorModal_ClickHandler = () => {
+		setIsInvalid(false);
 	};
 
 	//const newUser = (): { user: UserObject} =>{ //how to return object with properties in typescript
@@ -73,8 +72,10 @@ const AddUser = ({ onClick }: adduserProps) => {
 		event.preventDefault();
 
 		if (!validation()) {
+			setIsInvalid(true);
 			return;
 		} else {
+			setIsInvalid(false);
 			const newUser = {
 				id: Math.random().toLocaleString(),
 				username: enteredUsername,
