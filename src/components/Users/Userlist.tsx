@@ -1,24 +1,22 @@
-import React from "react";
-import '../models/IUser';
-import { IUser } from "../models/IUser";
+import React from 'react';
+import { IUser } from '../../models/IUser';
+import Card from '../layout/Card';
+import classes from './Userlist.module.css';
 
-type Props={
-    users: IUser[];
-}
+type Props = {
+	users: IUser[];
+};
 
-const Userlist = ({users}: Props) => {
+const Userlist = ({ users }: Props) => {
+	const userItems_jsx = users.map((userItem, index) => {
+		return <li key={index}>{`${userItem.username} (${userItem.age} years old)`}</li>;
+	});
 
-    const userItems_jsx = users.map((userItem, index) =>{
-        return (
-            <div key={index}>{`${userItem.username} (${userItem.age})`}</div>
-        )
-    });
-
-    return(
-        <section>
-            {userItems_jsx}
-        </section>
-    )
-}
+	return (
+		<Card className={classes.users}>
+			<ul>{userItems_jsx}</ul>
+		</Card>
+	);
+};
 
 export default Userlist;

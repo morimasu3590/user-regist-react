@@ -1,79 +1,119 @@
 import React, { useState } from 'react';
-import '../models/IUser';
 import { IUser } from '../../models/IUser';
-import './AddUser.module.css';
+import classes from './AddUser.module.css';
+import Card from '../layout/Card';
+import Button from '../layout/Button';
+import ErrorModal from '../ErrorModal';
 
+type Error = {
+	title: string;
+	message: string;
+};
 type adduserProps = {
-	onClick: ({id, username, age}: IUser) => void;
+	onClick: ({ id, username, age }: IUser) => void;
 };
 
 const AddUser = ({ onClick }: adduserProps) => {
-	const [ username, setUsername ] = useState('');
-	const [ age, setAge ] = useState('');
-	
+	const [ enteredUsername, setEnteredUsername ] = useState('');
+	const [ enteredAge, setEnteredAge ] = useState('');
+	const [ isInvalid, setIsInvalid ] = useState(false);
+	const [ error, setError ] = 
+	useState<Error>({
+		title: '',
+		message: ''
+	});
 
 	const username_ChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const usernameValue = event.target.value;
-		setUsername(usernameValue);
+		setEnteredUsername(usernameValue);
 	};
 
 	const age_ChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const ageValue = event.target.value;
-		setAge(ageValue);
+		setEnteredAge(ageValue);
 	};
 
-	const validation = () =>{
-		if(!!!username && username.trim().length <= 0){
+	const validation = () => {
+		let errorObj = {
+			title: '',
+			message: ''
+		};
+
+		if (!!!enteredUsername && enteredUsername.trim().length <= 0) {
+			errorObj.title = 'Invalid Username';
+			errorObj.message = 'Please enter a valid name (non-empty values).';
+			setError(errorObj);
+
+			setIsInvalid(true);
+			return false;
+		} else if (!!!enteredAge && enteredAge.trim().length <= 0) {
+			errorObj.title = 'Invalid Age';
+			errorObj.message = 'Please enter a valid Age (non-empty values).';
+			setError(errorObj);
+
+			setIsInvalid(true);
 			return false;
 		}
-		else if(!!!age && age.trim().length <= 0){
-			return false;
-		}
-			
+
+		setIsInvalid(false);
 		return true;
-	} 
+	};
+
+	const resetValue = () => {
+		setEnteredUsername('');
+		setEnteredAge('');
+	};
+
+	const errorModal_ClickHandler = (invalidState: boolean) => {
+		setIsInvalid(invalidState);
+	};
 
 	//const newUser = (): { user: UserObject} =>{ //how to return object with properties in typescript
 	const userform_submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		
-		if(!validation()){
-			
-			alert('invalid value');
+		if (!validation()) {
 			return;
-		}
-		
-        const newUser = {
-			id: Math.random().toLocaleString(),
-			username: username,
-			age: age
-		};
+		} else {
+			const newUser = {
+				id: Math.random().toLocaleString(),
+				username: enteredUsername,
+				age: enteredAge
+			};
 
-        onClick(newUser);
-		
+			onClick(newUser);
+			resetValue();
+		}
 	};
 
 	return (
-		<section>
-			<form onSubmit={userform_submitHandler}>
-				<div>
-					<label htmlFor="username">Username</label>
+		<div>
+			{isInvalid && <ErrorModal title={error.title} message={error.message} onClick={errorModal_ClickHandler} />}
+			<Card className={classes.input}>
+				<form onSubmit={userform_submitHandler}>
 					<div>
-						<input id="username" type="text" onChange={username_ChangeHandler} />
+						<label htmlFor="username">Username</label>
+						<div>
+							<input
+								id="username"
+								type="text"
+								onChange={username_ChangeHandler}
+								value={enteredUsername}
+							/>
+						</div>
 					</div>
-				</div>
-				<div>
-					<label htmlFor="age">Age (years)</label>
 					<div>
-						<input id="age" type="number" min="1" onChange={age_ChangeHandler} />
+						<label htmlFor="age">Age (years)</label>
+						<div>
+							<input id="age" type="number" min="1" onChange={age_ChangeHandler} value={enteredAge} />
+						</div>
 					</div>
-				</div>
-				<div>
-					<button type="submit">submit</button>
-				</div>
-			</form>
-		</section>
+					<div>
+						<Button type="submit">Add User</Button>
+					</div>
+				</form>
+			</Card>
+		</div>
 	);
 };
 
