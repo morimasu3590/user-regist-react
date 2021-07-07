@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import TopContainer from './components/layout/TopContainer';
+import AddUser from './components/Users/AddUser';
+import Userlist from './components/Users/Userlist';
+import './models/IUser';
+import { IUser } from './models/IUser';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+	const [ users, setUsers ] = useState<IUser[]>([]);
+	const Add_NewUser_Handler = ({ id: _Id, username: _name, age: _age }: IUser) => {
+		const newUser = {
+			id: _Id,
+			username: _name,
+			age: _age
+		};
+
+		setUsers((prevUsers) => {
+			return prevUsers.concat(newUser);
+		});
+	};
+
+	return (
+		<div>
+			<TopContainer>
+				<AddUser onClick={Add_NewUser_Handler} />
+				<Userlist users={users} />
+			</TopContainer>
+		</div>
+	);
+};
 
 export default App;
